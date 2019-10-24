@@ -135,7 +135,7 @@ def write_csv_headers(headers):
 def write_csv(data):
     if data['url'] != 'none': #отсекаем ненужные, "пустые" данные
         # print(data)
-        with open("biznes.csv", "a", newline='') as file:
+        with open("table.csv", "a", newline='') as file:
             writer = csv.writer(file)
             writer.writerow((data['name'],
                              data['price'],

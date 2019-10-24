@@ -3,6 +3,9 @@ import re
 import csv
 import codecs
 import time
+from progress.bar import Bar
+
+
 # Главная фукция, собирает все данные и отправляет на запись
 def main():
     sleep_data = float(input('Введите время задержки в секундах: '))
@@ -12,10 +15,13 @@ def main():
     write_csv_headers(headers)
     urls_names = get_urls_names()
     urls = get_urls(urls_names)
-    names= get_names(urls_names)
+    names = get_names(urls_names)
+    names_len = len(names)
+    global bar
+    bar = Bar('Процесс: ', max=names_len)
     const_c = -1
     for url in enumerate(urls):
-        print(url[1])
+        # print(url[1])
         try:
             price_data = get_price(get_html(url[1]))
             # print(price_data)
@@ -32,7 +38,7 @@ def main():
             images = 'none'
         try:
             shipping_data = get_price_shipping(get_html(url[1]))
-            print(shipping_data)
+            # print(shipping_data)
         except:
             shipping_data = 'none'
         const_c += 1
@@ -41,6 +47,7 @@ def main():
             data = {'name': names[const_c], 'url': now_url, 'price': price_data, 'shipping_price': shipping_data, 'images': images}
             write_csv(data)
             time.sleep(sleep_data)
+    bar.finish()
     print("Закончено!")
 
 # получение всех имён и url
@@ -49,7 +56,7 @@ def get_urls_names():
         file = codecs.open("names_urls.txt", 'r', 'utf-8')
         # for i in file:
         line = file.readlines()
-        print(line)
+        # print(line)
     finally:
         file.close()
     return line
@@ -58,7 +65,7 @@ def get_urls_names():
 def get_urls(urls_names):
     urls = ''.join(urls_names)
     s = re.findall('http://[^\r\n]+', urls)
-    print(s)
+    # print(s)
     return s
 
 def get_names(urls_names):
@@ -116,7 +123,7 @@ def get_price_shipping(html):
 
 # записываем заголовки для csv
 def write_csv_headers(headers):
-    with open("table.csv", "w", newline='') as file:
+    with open("biznes.csv", "w", newline='') as file:
         writer = csv.writer(file)
         writer.writerow((headers['e'],
                          headers['b'],
@@ -135,6 +142,8 @@ def write_csv(data):
                              data['shipping_price'],
                              data['url'],
                              data['images']))
+        bar.next()
+
         # print("acsses!")
 if __name__ == '__main__':  # \запускаем
     main()  # /функцию main()

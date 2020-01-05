@@ -123,7 +123,7 @@ def get_price_shipping(html):
 
 # записываем заголовки для csv
 def write_csv_headers(headers):
-    with open("biznes.csv", "w", newline='') as file:
+    with open("table.csv", "w", newline='') as file:
         writer = csv.writer(file)
         writer.writerow((headers['e'],
                          headers['b'],
